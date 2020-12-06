@@ -18,13 +18,27 @@ const Listing = require('../models/Listing');
 
 /****************************
  *  view listings
+ *  - /api/listings for all listings
+ *  - /api/listings?listingId=id for one listing if exists
+ *  - TODO:
+ *    - if listingId is not a objectId the function hangs
+ *    - but thats too bad you suppose to be here LOL
  ***************************/
 router.get('/', upload.none(), (req, res, next) => {
-  Listing.find().then(
-    listings => {
-      res.json(listings);
-    }
-  ).catch();
+  console.log(req.query);
+  if (req.query['listingId']) {
+    Listing.findById((req.query['listingId']))
+      .then(listing => {
+        res.json(listing);
+      })
+      .catch(err => console.log(err));
+  } else {
+    Listing.find().then(
+      listings => {
+        res.json(listings);
+      }
+    ).catch();
+  }
 });
 
 /****************************
