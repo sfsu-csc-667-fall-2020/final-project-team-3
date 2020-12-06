@@ -17,6 +17,17 @@ const upload = multer({storage: storage});
 const Listing = require('../models/Listing');
 
 /****************************
+ *  view listings
+ ***************************/
+router.get('/', upload.none(), (req, res, next) => {
+  Listing.find().then(
+    listings => {
+      res.json(listings);
+    }
+  ).catch();
+});
+
+/****************************
  *  listing creation
  ***************************/
 router.post('/create', upload.array('photos', 10), (req, res, next) => {
