@@ -28,13 +28,19 @@ router.post('/create', upload.array('photos', 10), (req, res, next) => {
     if (!title || !price || !type) {
       res.json({error: 'please fill in requried fields'});
     } else {
+      // if user uploaded images:
+      let images = [];
+      if (req.files) {
+        images = req.files.map(file => file.filename);
+      }
+
       const listing = new Listing({
         title,
         description,
         price,
         type,
         user: req.user.id,
-        images: req.files.map(file => file.filename),
+        images,
       });
 
       listing.save()
