@@ -1,0 +1,73 @@
+const express = require('express');
+const router = express.Router();
+//mongoose models
+const User = require('../models/User');
+// other imports
+const bcrypt = require('bcrypt');
+
+/****************************
+ *
+ *
+ ***************************/
+// register page
+router.post('/register', (req, res) => {
+  console.log(req.body);
+  // when registration form is submited, pull value from the form
+  const {username, email, password} = req.body;
+
+  let errors = [];
+
+  // if any of the fields are empty
+  if (!username || !email || !password) {
+    errors.push({'message': 'please fill in all fields'});
+  }
+
+  // if password is not lomg enough
+  if (password.length < 6) {
+    errors.push({message: 'password should be at least 6 charaters'});
+  }
+
+  // if there are no error
+  if (errors.length === 0) {
+    User.findOne({username: username})
+      .then(user => {
+        // if username already exists
+        if (user) {
+          errors.push({message: 'username taken'});
+          console.log('dumb fuck username taken');
+          res.json({message: 'username is taken', errors: errors});
+        } else {
+          const newUser = new User({
+            username,
+            email,
+            password
+          });
+
+          // generate salt value
+          bcrypt.genSalt(10, (err, salt) => {
+            // generate hashed password with salt
+            bcrypt.hash(password, salt, (err, hash) => {
+              if (err) throw err;
+              // set password to hashed password
+              newUser.password = hash;
+              // save user into db
+              newUser.save()
+                .then(user => {
+                  res.json({message: 'registration completed'});
+                })
+                .catch(err => console.log(err));
+            })
+          });
+        }
+      });
+  }
+  console.log(errors);
+});
+
+// TODO
+router.post('/login', (req, res) => {
+  console.log(req.body);
+  res.send('login');
+});
+
+module.exports = router;
