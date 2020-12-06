@@ -6,6 +6,7 @@
 </head>
 <body>
 
+<!--this form is can be used as template for accessing /api/users/register endpoint in React-->
 <form action="http://localhost:4000/api/users/register" method="post">
     <h2>register</h2>
     <label for="username">username:</label>
@@ -18,6 +19,18 @@
     <input id="email" name="email" type="email">
 
     <button type="submit">register</button>
+</form>
+
+<!--this form is can be used as template for accessing /api/users/login endpoint in React-->
+<form action="http://localhost:4000/api/users/login" method="post">
+    <h2>login</h2>
+    <label for="username">username:</label>
+    <input type="text" name="username" id="username"/>
+
+    <label for="password">password:</label>
+    <input id="password" name="password" type="password">
+
+    <button type="submit">login</button>
 </form>
 
 </body>

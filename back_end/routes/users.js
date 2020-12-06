@@ -4,12 +4,15 @@ const router = express.Router();
 const User = require('../models/User');
 // other imports
 const bcrypt = require('bcrypt');
+const passport = require('passport');
 
 /****************************
- *
- *
+ *  register endpoint
+ *  //TODO
+ *  - send the correct json response so react and understand it XD
+ *  - send session back to user once register so user does not need to login again
+ *  - add on additional password strength checker?
  ***************************/
-// register page
 router.post('/register', (req, res) => {
   console.log(req.body);
   // when registration form is submited, pull value from the form
@@ -64,10 +67,18 @@ router.post('/register', (req, res) => {
   console.log(errors);
 });
 
-// TODO
-router.post('/login', (req, res) => {
+/****************************
+ *  register endpoint using passport
+ *  //TODO
+ *  - send the correct json response so react and understand it XD
+ *  - send user the session once login
+ ***************************/
+router.post('/login', (req, res, next) => {
   console.log(req.body);
-  res.send('login');
+  passport.authenticate('local', {
+    successRedirect: '/', // once frontend React routes are set up change these values
+    failureRedirect: '/'
+  })(req, res, next);
 });
 
 module.exports = router;

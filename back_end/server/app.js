@@ -15,6 +15,12 @@ const KafkaProducer = require('../kafka/KafkaProducer');
 const kafkaProducer = new KafkaProducer('images');
 
 /*****************************
+ *          passport         *
+ *****************************/
+const passport = require('passport');
+require('../config/passport')(passport);
+
+/*****************************
  *          mongoDB          *
  *****************************/
 const mongoose = require('mongoose');
@@ -26,8 +32,6 @@ mongoose.connect(uri, {
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.log(err));
 
-
-
 /*****************************
  *          express          *
  *****************************/
@@ -36,7 +40,20 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`server started on ${PORT}`));
 
+// Bodyparser
 app.use(express.urlencoded({extended: true}));
+
+// express session
+const session = require('express-session');
+app.use(session({
+  secret: 'secret',
+  resave: true,
+  saveUninitialized: true
+}));
+
+// passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
 
 
 // EXPRESS ROUTES
