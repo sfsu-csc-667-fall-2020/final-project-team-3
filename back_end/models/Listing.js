@@ -19,7 +19,10 @@ const ListingSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.ObjectId,
     ref: 'User',
-    required: true
+    // required: true
+  },
+  images: {
+    type: Array,
   },
   date: {
     type: String,

@@ -40,6 +40,9 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`server started on ${PORT}`));
 
+// let express server static files
+app.use(express.static('public'));
+
 // Bodyparser
 app.use(express.urlencoded({extended: true}));
 
