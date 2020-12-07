@@ -14,7 +14,12 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 
 const store = createStore(rootReducer, applyMiddleware(thunk));
-
+// main page
+/* TODO
+ * add routeprotector middleware to check if user is logged in / admin to load correct things
+ * 
+ * 
+ */
 ReactDOM.render(
   <Provider store={store}>
     <React.StrictMode>
