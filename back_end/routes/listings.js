@@ -88,4 +88,19 @@ router.post('/create', upload.array('photos', 10), (req, res, next) => {
   }
 });
 
+/****************************
+ *  delete listing
+ ***************************/
+router.delete('/listing/:id', (req, res) =>
+    Listing.findOneAndRemove({
+      _id:req.params.id
+    }, (err, book) => {
+      if(err) {
+        res.send('error removing')
+      } else {
+        console.log(listing);
+        res.status(204);
+      }
+    }));
+
 module.exports = router;
