@@ -40,6 +40,9 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`server started on ${PORT}`));
 
+// let express server static files
+app.use(express.static('public'));
+
 // Bodyparser
 app.use(express.urlencoded({extended: true}));
 
@@ -59,6 +62,7 @@ app.use(passport.session());
 // EXPRESS ROUTES
 // requests gets routed to ../routes/ to keep app.js clean
 app.use('/api/users', require('../routes/users'));
+app.use('/api/listings', require('../routes/listings'));
 
 
 /*****************************
@@ -92,6 +96,16 @@ app.get('/api/getInquiries', (req, res) => {
 // TODO
 app.post('/api/makeInquiry', (req, res) => {
   res.send('makeInquiry');
+});
+
+// TESTING
+app.get('/me', (req, res) => {
+  if (req.user) {
+    res.json(req.user.id)
+  } else {
+    res.send('pls login')
+  }
+
 });
 
 

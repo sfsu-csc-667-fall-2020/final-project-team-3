@@ -68,7 +68,7 @@ router.post('/register', (req, res) => {
 });
 
 /****************************
- *  register endpoint using passport
+ *  login endpoint using passport
  *  //TODO
  *  - send the correct json response so react and understand it XD
  *  - send user the session once login
@@ -76,7 +76,7 @@ router.post('/register', (req, res) => {
 router.post('/login', (req, res, next) => {
   console.log(req.body);
   passport.authenticate('local', {
-    successRedirect: '/', // once frontend React routes are set up change these values
+    successRedirect: '/me', // once frontend React routes are set up change these values
     failureRedirect: '/'
   })(req, res, next);
 });
