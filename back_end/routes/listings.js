@@ -98,7 +98,7 @@ router.post('/create', upload.array('photos', 10), (req, res, next) => {
 
 /****************************
  *  update listing
- *  - /api/listings/updateInfo?listingId=<id>
+ *  - /api/listings/update?listingId=<id>
  ***************************/
 router.post('/update', upload.none(), (req, res, next) => {
     if (!req.user) {
