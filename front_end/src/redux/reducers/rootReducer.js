@@ -1,5 +1,8 @@
-import { combineReducers } from 'redux';
+import { combineReducers } from "redux";
+import listingReducer from "./listingReducer";
+import inquiryReducer from "./inquiryReducer";
 
 export default combineReducers({
-// add your reducers here
+  listingReducer,
+  inquiryReducer,
 });
