@@ -19,6 +19,7 @@
     "mongoose": "^5.11.4",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
-    "redis": "^3.0.2"
+    "redis": "^3.0.2",
+    "websocket": "^1.0.32"
   }
 }

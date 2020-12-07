@@ -17,6 +17,15 @@ import { Provider } from 'react-redux';
 
 const store = createStore(rootReducer, applyMiddleware(thunk));
 
+const webSocket = new WebSocket('ws://' + window.location.host.split(':')[0] + (window.location.port && `:${window.location.port}`) + '/websocket');
+
+
+webSocket.onmessage = (message) => {
+  console.log(message)
+  store.dispatch(insertMessage(message.data));
+};
+
+
 ReactDOM.render(
   <Provider store={store}>
     <React.StrictMode>
