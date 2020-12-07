@@ -52,12 +52,20 @@ router.get('/', upload.none(), (req, res, next) => {
 ;
 
 /****************************
- *  listing creation
+ *  create listing
+ *  -/api/listings/create (POST)
+ *  {
+ *    title : String
+ *    description : String
+ *    price : Number
+ *    type: String
+ *    images: <input id="photos" name="photos" type="file" multiple accept="image/*">
+ *       up to 10 images, be sure to add enctype="multipart/form-data" in <form> tag
+ *  }
  ***************************/
 router.post('/create', upload.array('photos', 10), (req, res, next) => {
   // only logged in use can submit listings
   if (!req.user) {
-    let response = new ResponseDTO();
     res.json(new ResponseDTO().setStatusCode(401).pushError('Please log in before submitting listing'));
   } else {
     const {title, description, price, type} = req.body;
@@ -87,5 +95,47 @@ router.post('/create', upload.array('photos', 10), (req, res, next) => {
     }
   }
 });
+
+/****************************
+ *  update listing
+ *  - /api/listings/updateInfo?listingId=<id>
+ ***************************/
+router.post('/update', upload.none(), (req, res, next) => {
+    if (!req.user) {
+      res.json(new ResponseDTO().setStatusCode(401).pushError('Please log in to update listing'));
+    } else {
+      Listing.findById(req.query['listingId'], null, null, (err, listing) => {
+        if (err) {
+          console.log(err);
+        }
+        if (listing) {
+          // check if user editing the listing is the creator of the listing
+          if (req.user._id.toString() !== listing.user._id.toString()) {
+            res.json(new ResponseDTO().setStatusCode(401).pushError(`You are not authorzied to edit this listing.`));
+          } else {
+            const {title, description, price, type} = req.body;
+            Listing.findOneAndUpdate({_id: req.query['listingId']}, {
+              title,
+              description,
+              price,
+              type,
+              modified: Date.now()
+            }, {new: true})
+              .then((newListing) => {
+                  res.json(new ResponseDTO(newListing))
+                }
+              )
+              .catch(err => {
+                console.log(err);
+              });
+          }
+        } else {
+          res.json(new ResponseDTO().setStatusCode(404).pushError('listing not found'))
+        }
+
+      });
+    }
+  }
+);
 
 module.exports = router;
