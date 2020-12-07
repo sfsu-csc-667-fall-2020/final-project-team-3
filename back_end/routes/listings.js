@@ -138,4 +138,40 @@ router.post('/update', upload.none(), (req, res, next) => {
   }
 );
 
+
+/****************************
+ *  update listing images
+ *  - /api/listings/addImage?listingId=<id>
+ *  - req.files:
+ ***************************/
+router.post('/addImage', upload.array('photos', 10), (req, res, next) => {
+  if (!req.user) {
+    return res.json(new ResponseDTO().setStatusCode(401).pushError('Please log in to update listing'));
+  } else {
+    Listing.findById(req.query['listingId'], null, null, (err, listing) => {
+      if (err) {
+        console.log(err);
+      }
+      if (listing) {
+        let images = listing.images;
+        req.files.forEach(file => {
+          images.push(file.filename);
+        });
+        if (listing.user._id.toString() === req.user._id.toString()) {
+          Listing.findOneAndUpdate({_id: req.query['listingId']}, {images}, {new: true}, (err, listing) => {
+            if (err) {
+              console.log(err);
+            }
+            return res.json(new ResponseDTO(listing));
+          })
+        } else {
+          return res.json(new ResponseDTO().setStatusCode(401).pushError('you dont have permission to edit this listing'));
+        }
+      } else {
+        return res.json(new ResponseDTO().setStatusCode(404).pushError('listing not found'));
+      }
+    })
+  }
+});
+
 module.exports = router;
