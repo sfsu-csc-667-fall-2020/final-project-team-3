@@ -9,6 +9,7 @@ wss.on('connection', (ws) => {
   console.log('Someone has connected');
 });
 
+
 imageClient.on('message', (channel, message) => { // all channels for now
   console.log(`subscriber hears message ${message}`);
   console.log(JSON.stringify(message));
@@ -19,7 +20,7 @@ imageClient.on('message', (channel, message) => { // all channels for now
 
 imageClient.subscribe('images');
 
-
+//inquiry messages
 inquiryClient.on('message', (channel, message) => { // all channels for now
     console.log(`subscriber hears message ${message}`);
     console.log(JSON.stringify(message));
