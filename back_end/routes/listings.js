@@ -20,18 +20,27 @@ const Listing = require('../models/Listing');
  *  view listings
  *  - /api/listings for all listings
  *  - /api/listings?listingId=id for one listing if exists
+ *  - /api/listings?listingType=type for all listings with that type
  *  - TODO:
  *    - if listingId is not a objectId the function hangs
  *    - but thats too bad you suppose to be here LOL
  ***************************/
 router.get('/', upload.none(), (req, res, next) => {
   console.log(req.query);
+  // if query contains listingid send that listing if exists
   if (req.query['listingId']) {
     Listing.findById((req.query['listingId']))
       .then(listing => {
         res.json(listing);
       })
       .catch(err => console.log(err));
+    // if query contains type send all listings with that type
+  } else if (req.query['type']) {
+    Listing.find({type: req.query['type']}, (err, listings) => {
+      if (err) throw err;
+      res.json(listings);
+    })
+    //else send all listings
   } else {
     Listing.find().then(
       listings => {
@@ -39,7 +48,8 @@ router.get('/', upload.none(), (req, res, next) => {
       }
     ).catch();
   }
-});
+})
+;
 
 /****************************
  *  listing creation
