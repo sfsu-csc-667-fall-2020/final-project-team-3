@@ -6,6 +6,8 @@ import * as serviceWorker from "./serviceWorker";
 import rootReducer from "./redux/reducers/rootReducer";
 import thunk from "redux-thunk";
 import Admin from "./pages/Admin";
+import AdminPanel from "./components/AdminPanel";
+import DisplayListings from "./components/DisplayListings";
 import User from "./pages/User";
 import "./App.css";
 
@@ -24,6 +26,8 @@ ReactDOM.render(
   <Provider store={store}>
     <React.StrictMode>
       <BrowserRouter>
+      <AdminPanel isAdmin = {true}/>
+      <DisplayListings />
         <Route path='/admin'>
           <Admin />
           <User />

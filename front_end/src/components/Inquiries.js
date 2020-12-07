@@ -5,7 +5,7 @@ const Inquiries = () => {
   const inquiries = useSelector((state) => state.inquiryReducer.inquiries);
   return (
     <div>
-      <h1> Display Inquiries</h1>
+      <h2>Inquiries</h2>
       <h3>
         {inquiries.map((inquiry, index) => (
           <div key={index} className='inquiry'>

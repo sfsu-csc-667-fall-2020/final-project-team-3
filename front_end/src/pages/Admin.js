@@ -1,16 +1,19 @@
 import React from "react";
-
-import ViewListings from "../components/ViewListings";
-import ListingCreationForm from "../components/ListingCreationForm";
 import Inquiries from "../components/Inquiries";
 
+
+// Admin panel - loads inquiries and allows admins to respond
+// TODO: add the inquiry functionality
 const Admin = () => {
   return (
-    <div>
-      <h1>Admin</h1>
-      <ListingCreationForm />
-      <Inquiries />
-      <ViewListings userMode={false} />
+    <div class = "admin-panel">
+      <div class = "grid-container">
+        <div class = "site-content" id = "site-content">
+          <h3>Admin Panel</h3>
+          inquiries and response op tion will go here
+          <Inquiries />
+        </div>
+      </div>
     </div>
   );
 };
