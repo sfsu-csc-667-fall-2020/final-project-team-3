@@ -3,6 +3,7 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const {v4: uuidv4} = require('uuid');
+const ResponseDTO = require('../helper/responseDTO');
 
 // multer storage config
 let storage = multer.diskStorage({
@@ -26,25 +27,24 @@ const Listing = require('../models/Listing');
  *    - but thats too bad you suppose to be here LOL
  ***************************/
 router.get('/', upload.none(), (req, res, next) => {
-  console.log(req.query);
   // if query contains listingid send that listing if exists
   if (req.query['listingId']) {
     Listing.findById((req.query['listingId']))
       .then(listing => {
-        res.json(listing);
+        res.json(new ResponseDTO(listing));
       })
       .catch(err => console.log(err));
     // if query contains type send all listings with that type
   } else if (req.query['type']) {
     Listing.find({type: req.query['type']}, (err, listings) => {
       if (err) throw err;
-      res.json(listings);
+      res.json(new ResponseDTO(listings));
     })
     //else send all listings
   } else {
     Listing.find().then(
       listings => {
-        res.json(listings);
+        res.json(new ResponseDTO(listings));
       }
     ).catch();
   }
@@ -57,11 +57,12 @@ router.get('/', upload.none(), (req, res, next) => {
 router.post('/create', upload.array('photos', 10), (req, res, next) => {
   // only logged in use can submit listings
   if (!req.user) {
-    res.json({error: "please login"})
+    let response = new ResponseDTO();
+    res.json(new ResponseDTO().setStatusCode(401).pushError('Please log in before submitting listing'));
   } else {
     const {title, description, price, type} = req.body;
     if (!title || !price || !type) {
-      res.json({error: 'please fill in requried fields'});
+      res.json(new ResponseDTO().pushError('Please fill in required fields'));
     } else {
       // if user uploaded images:
       let images = [];
@@ -80,7 +81,7 @@ router.post('/create', upload.array('photos', 10), (req, res, next) => {
 
       listing.save()
         .then(
-          res.json(listing)
+          res.json(new ResponseDTO(listing))
         )
         .catch(err => console.log(err));
     }
