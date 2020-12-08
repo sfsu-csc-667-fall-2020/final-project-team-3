@@ -9,13 +9,6 @@ const redis = require("redis");
 const redisClient = redis.createClient();
 
 /*****************************
- *           kafka           *
- *****************************/
-const KafkaProducer = require("../kafka/KafkaProducer");
-const kafkaProducer = new KafkaProducer("images");
-kafkaProducer.connect(() => console.log('Kafka Producer Connected'));
-
-/*****************************
  *          passport         *
  *****************************/
 const passport = require("passport");
@@ -44,7 +37,7 @@ const express = require("express");
 const expressLayouts = require("express-ejs-layouts");
 const flash = require("connect-flash");
 const app = express();
-const PORT = process.env.PORT || 4000;
+const PORT = 4000;
 app.listen(PORT, () => console.log(`server started on ${PORT}`));
 
 

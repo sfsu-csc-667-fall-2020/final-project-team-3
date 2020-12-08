@@ -4,6 +4,7 @@ const multer = require('multer');
 const path = require('path');
 const {v4: uuidv4} = require('uuid');
 const ResponseDTO = require('../helper/responseDTO');
+const {forwardAuthenticated} = require("../config/auth");
 
 
 /*****************************
@@ -71,41 +72,37 @@ router.get('/', upload.none(), (req, res, next) => {
  *       up to 10 images, be sure to add enctype="multipart/form-data" in <form> tag
  *  }
  ***************************/
-router.post('/create', upload.array('photos', 10), (req, res, next) => {
+router.post('/create', forwardAuthenticated, upload.array('photos', 10), (req, res, next) => {
   // only logged in use can submit listings
-  if (!req.user) {
-    res.json(new ResponseDTO().setStatusCode(401).pushError('Please log in before submitting listing'));
+  const {title, description, price, type} = req.body;
+  if (!title || !price || !type) {
+    res.json(new ResponseDTO().pushError('Please fill in required fields'));
   } else {
-    const {title, description, price, type} = req.body;
-    if (!title || !price || !type) {
-      res.json(new ResponseDTO().pushError('Please fill in required fields'));
-    } else {
-      // if user uploaded images:
-      let images = [];
-      if (req.files) {
-        // create a list of file name to store in listing.images
-        images = req.files.map(file => file.filename);
-        // send out image info for kafka to process
-        req.files.forEach(file => {
-          kafkaProducer.send(file);
-        })
-      }
-
-      const listing = new Listing({
-        title,
-        description,
-        price,
-        type,
-        user: req.user.id,
-        images,
-      });
-
-      listing.save()
-        .then(
-          res.json(new ResponseDTO(listing))
-        )
-        .catch(err => console.log(err));
+    // if user uploaded images:
+    let images = [];
+    if (req.files) {
+      // create a list of file name to store in listing.images
+      images = req.files.map(file => file.filename);
+      // send out image info for kafka to process
+      req.files.forEach(file => {
+        kafkaProducer.send(file);
+      })
     }
+
+    const listing = new Listing({
+      title,
+      description,
+      price,
+      type,
+      user: req.user.id,
+      images,
+    });
+
+    listing.save()
+      .then(
+        res.json(new ResponseDTO(listing))
+      )
+      .catch(err => console.log(err));
   }
 });
 
@@ -113,41 +110,37 @@ router.post('/create', upload.array('photos', 10), (req, res, next) => {
  *  update listing
  *  - /api/listings/update?listingId=<id>
  ***************************/
-router.post('/update', upload.none(), (req, res, next) => {
-    if (!req.user) {
-      res.json(new ResponseDTO().setStatusCode(401).pushError('Please log in to update listing'));
-    } else {
-      Listing.findById(req.query['listingId'], null, null, (err, listing) => {
-        if (err) {
-          console.log(err);
-        }
-        if (listing) {
-          // check if user editing the listing is the creator of the listing
-          if (req.user._id.toString() !== listing.user._id.toString()) {
-            res.json(new ResponseDTO().setStatusCode(401).pushError(`You are not authorzied to edit this listing.`));
-          } else {
-            const {title, description, price, type} = req.body;
-            Listing.findOneAndUpdate({_id: req.query['listingId']}, {
-              title,
-              description,
-              price,
-              type,
-              modified: Date.now()
-            }, {new: true})
-              .then((newListing) => {
-                  res.json(new ResponseDTO(newListing))
-                }
-              )
-              .catch(err => {
-                console.log(err);
-              });
-          }
+router.post('/update', forwardAuthenticated, upload.none(), (req, res, next) => {
+    Listing.findById(req.query['listingId'], null, null, (err, listing) => {
+      if (err) {
+        console.log(err);
+      }
+      if (listing) {
+        // check if user editing the listing is the creator of the listing
+        if (req.user._id.toString() !== listing.user._id.toString()) {
+          res.json(new ResponseDTO().setStatusCode(401).pushError(`You are not authorzied to edit this listing.`));
         } else {
-          res.json(new ResponseDTO().setStatusCode(404).pushError('listing not found'))
+          const {title, description, price, type} = req.body;
+          Listing.findOneAndUpdate({_id: req.query['listingId']}, {
+            title,
+            description,
+            price,
+            type,
+            modified: Date.now()
+          }, {new: true})
+            .then((newListing) => {
+                res.json(new ResponseDTO(newListing))
+              }
+            )
+            .catch(err => {
+              console.log(err);
+            });
         }
+      } else {
+        res.json(new ResponseDTO().setStatusCode(404).pushError('listing not found'))
+      }
 
-      });
-    }
+    });
   }
 );
 
@@ -157,34 +150,30 @@ router.post('/update', upload.none(), (req, res, next) => {
  *  - /api/listings/addImage?listingId=<id>
  *  - req.files:
  ***************************/
-router.post('/addImage', upload.array('photos', 10), (req, res, next) => {
-  if (!req.user) {
-    return res.json(new ResponseDTO().setStatusCode(401).pushError('Please log in to update listing'));
-  } else {
-    Listing.findById(req.query['listingId'], null, null, (err, listing) => {
-      if (err) {
-        console.log(err);
-      }
-      if (listing) {
-        let images = listing.images;
-        req.files.forEach(file => {
-          images.push(file.filename);
-        });
-        if (listing.user._id.toString() === req.user._id.toString()) {
-          Listing.findOneAndUpdate({_id: req.query['listingId']}, {images}, {new: true}, (err, listing) => {
-            if (err) {
-              console.log(err);
-            }
-            return res.json(new ResponseDTO(listing));
-          })
-        } else {
-          return res.json(new ResponseDTO().setStatusCode(401).pushError('you dont have permission to edit this listing'));
-        }
+router.post('/addImage', forwardAuthenticated, upload.array('photos', 10), (req, res, next) => {
+  Listing.findById(req.query['listingId'], null, null, (err, listing) => {
+    if (err) {
+      console.log(err);
+    }
+    if (listing) {
+      let images = listing.images;
+      req.files.forEach(file => {
+        images.push(file.filename);
+      });
+      if (listing.user._id.toString() === req.user._id.toString()) {
+        Listing.findOneAndUpdate({_id: req.query['listingId']}, {images}, {new: true}, (err, listing) => {
+          if (err) {
+            console.log(err);
+          }
+          return res.json(new ResponseDTO(listing));
+        })
       } else {
-        return res.json(new ResponseDTO().setStatusCode(404).pushError('listing not found'));
+        return res.json(new ResponseDTO().setStatusCode(401).pushError('you dont have permission to edit this listing'));
       }
-    })
-  }
+    } else {
+      return res.json(new ResponseDTO().setStatusCode(404).pushError('listing not found'));
+    }
+  })
 });
 
 module.exports = router;
