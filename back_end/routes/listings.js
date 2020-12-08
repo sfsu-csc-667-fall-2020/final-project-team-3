@@ -4,6 +4,15 @@ const multer = require('multer');
 const path = require('path');
 const {v4: uuidv4} = require('uuid');
 const ResponseDTO = require('../helper/responseDTO');
+const {forwardAuthenticated} = require("../config/auth");
+
+
+/*****************************
+ *           kafka           *
+ *****************************/
+const KafkaProducer = require("../kafka/KafkaProducer");
+const kafkaProducer = new KafkaProducer("images");
+kafkaProducer.connect(() => console.log('Kafka Producer Connected'));
 
 // multer storage config
 let storage = multer.diskStorage({
@@ -75,7 +84,12 @@ router.post('/create', upload.array('photos', 10), (req, res, next) => {
       // if user uploaded images:
       let images = [];
       if (req.files) {
+        // create a list of file name to store in listing.images
         images = req.files.map(file => file.filename);
+        // send out image info for kafka to process
+        req.files.forEach(file => {
+          kafkaProducer.send(file);
+        })
       }
 
       const listing = new Listing({
@@ -154,9 +168,11 @@ router.post('/addImage', upload.array('photos', 10), (req, res, next) => {
       }
       if (listing) {
         let images = listing.images;
-        req.files.forEach(file => {
-          images.push(file.filename);
-        });
+        if (req.files) {
+          req.files.forEach(file => {
+            images.push(file.filename);
+          });
+        }
         if (listing.user._id.toString() === req.user._id.toString()) {
           Listing.findOneAndUpdate({_id: req.query['listingId']}, {images}, {new: true}, (err, listing) => {
             if (err) {

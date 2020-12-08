@@ -9,12 +9,6 @@ const redis = require("redis");
 const redisClient = redis.createClient();
 
 /*****************************
- *           kafka           *
- *****************************/
-const KafkaProducer = require("../kafka/KafkaProducer");
-const kafkaProducer = new KafkaProducer("images");
-
-/*****************************
  *          passport         *
  *****************************/
 const passport = require("passport");
@@ -43,7 +37,7 @@ const express = require("express");
 const expressLayouts = require("express-ejs-layouts");
 const flash = require("connect-flash");
 const app = express();
-const PORT = process.env.PORT || 4000;
+const PORT = 4000;
 app.listen(PORT, () => console.log(`server started on ${PORT}`));
 
 
@@ -89,23 +83,6 @@ app.use("/", require("../routes/index.js"));
 app.use("/users", require("../routes/users"));
 app.use('/api/listings', require('../routes/listings'));
 
-/*****************************
- *          endpoints        *
- *****************************/
-// TODO
-app.post("/api/createListing", (req, res) => {
-  res.send("createListing");
-});
-
-// TODO
-app.post("/api/editListing", (req, res) => {
-  res.send("editListing");
-});
-
-// TODO
-app.get("/api/viewListings", (req, res) => {
-  res.send("viewListings");
-});
 
 // TODO
 app.post("/api/deleteListing", (req, res) => {
