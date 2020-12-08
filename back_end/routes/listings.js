@@ -5,6 +5,14 @@ const path = require('path');
 const {v4: uuidv4} = require('uuid');
 const ResponseDTO = require('../helper/responseDTO');
 
+
+/*****************************
+ *           kafka           *
+ *****************************/
+const KafkaProducer = require("../kafka/KafkaProducer");
+const kafkaProducer = new KafkaProducer("images");
+kafkaProducer.connect(() => console.log('Kafka Producer Connected'));
+
 // multer storage config
 let storage = multer.diskStorage({
   destination: './public/uploads',
@@ -75,7 +83,12 @@ router.post('/create', upload.array('photos', 10), (req, res, next) => {
       // if user uploaded images:
       let images = [];
       if (req.files) {
+        // create a list of file name to store in listing.images
         images = req.files.map(file => file.filename);
+        // send out image info for kafka to process
+        req.files.forEach(file => {
+          kafkaProducer.send(file);
+        })
       }
 
       const listing = new Listing({

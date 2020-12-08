@@ -13,6 +13,7 @@ const redisClient = redis.createClient();
  *****************************/
 const KafkaProducer = require("../kafka/KafkaProducer");
 const kafkaProducer = new KafkaProducer("images");
+kafkaProducer.connect(() => console.log('Kafka Producer Connected'));
 
 /*****************************
  *          passport         *
@@ -89,23 +90,6 @@ app.use("/", require("../routes/index.js"));
 app.use("/users", require("../routes/users"));
 app.use('/api/listings', require('../routes/listings'));
 
-/*****************************
- *          endpoints        *
- *****************************/
-// TODO
-app.post("/api/createListing", (req, res) => {
-  res.send("createListing");
-});
-
-// TODO
-app.post("/api/editListing", (req, res) => {
-  res.send("editListing");
-});
-
-// TODO
-app.get("/api/viewListings", (req, res) => {
-  res.send("viewListings");
-});
 
 // TODO
 app.post("/api/deleteListing", (req, res) => {
