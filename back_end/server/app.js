@@ -6,7 +6,10 @@
  *           redis           *
  *****************************/
 const redis = require("redis");
-const redisClient = redis.createClient();
+const redisClient = redis.createClient({
+  host: "redis",
+  port: 6379,
+});
 
 /*****************************
  *          passport         *
@@ -40,17 +43,15 @@ const app = express();
 const PORT = 4000;
 app.listen(PORT, () => console.log(`server started on ${PORT}`));
 
-
 // EJS
 app.use(expressLayouts);
 app.set("view engine", "ejs");
 
 // let express server static files
-app.use(express.static('public'));
-
+app.use(express.static("public"));
 
 // Bodyparser
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 
 // express session
 const session = require("express-session");
@@ -81,7 +82,7 @@ app.use(function (req, res, next) {
 // requests gets routed to ../routes/ to keep app.js clean
 app.use("/", require("../routes/index.js"));
 app.use("/users", require("../routes/users"));
-app.use('/api/listings', require('../routes/listings'));
+app.use("/api/listings", require("../routes/listings"));
 
 
 // TODO
