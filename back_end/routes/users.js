@@ -5,7 +5,9 @@ const User = require("../models/User");
 // other imports
 const bcrypt = require("bcryptjs");
 const passport = require("passport");
+
 const {forwardAuthenticated} = require("../config/auth");
+const ResponseDTO = require('../helper/responseDTO');
 
 /****************************
  *  register endpoint
@@ -24,19 +26,19 @@ router.get("/register", forwardAuthenticated, (req, res) =>
 
 // Register
 router.post("/register", (req, res) => {
-  const {username, email, password, password2} = req.body;
+  const { username, email, password, password2 } = req.body;
   let errors = [];
 
   if (!username || !email || !password || !password2) {
-    errors.push({msg: "Please enter all fields"});
+    errors.push({ msg: "Please enter all fields" });
   }
 
-  if (password !== password2) {
-    errors.push({msg: "Passwords do not match"});
+  if (password != password2) {
+    errors.push({ msg: "Passwords do not match" });
   }
 
   if (password.length < 6) {
-    errors.push({msg: "Password must be at least 6 characters"});
+    errors.push({ msg: "Password must be at least 6 characters" });
   }
 
   if (errors.length > 0) {
@@ -48,9 +50,9 @@ router.post("/register", (req, res) => {
       password2,
     });
   } else {
-    User.findOne({email: email}).then((user) => {
+    User.findOne({ email: email }).then((user) => {
       if (user) {
-        errors.push({msg: "Email already exists"});
+        errors.push({ msg: "Email already exists" });
         res.render("register", {
           errors,
           username,
@@ -87,18 +89,35 @@ router.post("/register", (req, res) => {
 });
 
 /****************************
- *  login endpoint using passport
+ *  register endpoint using passport
  *  //TODO
  *  - send the correct json response so react and understand it XD
  *  - send user the session once login
  ***************************/
 // Login
 router.post("/login", (req, res, next) => {
-  passport.authenticate("local", {
-    successRedirect: "/dashboard",
-    failureRedirect: "/users/login",
-    failureFlash: true,
-  })(req, res, next);
+  passport.authenticate("local", null, (err, user, info) => {
+      console.log(`err ${err}`);
+      console.log(`user ${user}`);
+      console.log(`info ${info}`);
+      if (err) {
+        return next(err);
+      }
+      if (!user) {
+        return res.json(new ResponseDTO().setStatusCode(403).pushError(info.message));
+      }
+
+      req.logIn(user, (err) => {
+        if (err) {
+          return next(err)
+        }
+        return res.json(new ResponseDTO(user));
+      });
+    }
+    // successRedirect: "/dashboard",
+    // failureRedirect: "/users/login",
+    // failureFlash: true,
+  )(req, res, next);
 });
 
 // Logout
