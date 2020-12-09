@@ -47,7 +47,9 @@ app.set("view engine", "ejs");
 
 // let express server static files
 app.use(express.static('public'));
-
+app.use(express.json({
+  type: ['application/json', 'text/plain']
+}));
 
 // Bodyparser
 app.use(express.urlencoded({extended: true}));
@@ -82,7 +84,7 @@ app.use(function (req, res, next) {
 app.use("/", require("../routes/index.js"));
 app.use("/users", require("../routes/users"));
 app.use('/api/listings', require('../routes/listings'));
-app.use('/api/inquiry', require('../routes/inquiry'));
+app.use('/api/inquiries', require('../routes/inquiry'));
 
 
 // // TODO

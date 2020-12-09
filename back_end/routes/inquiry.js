@@ -3,79 +3,82 @@ const router = express.Router();
 const ResponseDTO = require('../helper/responseDTO');
 //mongoose models
 const Inquiry = require("../models/Inquiry");
-const Listing = require("../models/Listing");
 
-// other imports
-const bcrypt = require("bcryptjs");
-const passport = require("passport");
-const {forwardAuthenticated} = require("../config/auth");
-
-
-const KafkaProducer = require("../kafka/KafkaProducer");
-const kafkaProducer = new KafkaProducer("inquiries");
-kafkaProducer.connect(() => console.log('Kafka Producer Connected'));
-
-
-
-router.get('/', async (req, res) => {
+/****************************
+ *  view inquiries
+ *  - /api/inquiries for all inquiries
+ *  - /api/inquiries?listingId=id for all inquiries relating to that listing
+ ***************************/
+router.get('/', async (req, res, next) => {
+  const listingId = req.query['listingId'];
+  // check if there is a listingId query being passed in
+  // and check if the listingId is valid
+  if (listingId) {
+    if (ObjectId.isValid(listingId)) {
+      try {
+        const inquiries = await Inquiry.find(listingId);
+        res.json(new ResponseDTO(inquiries));
+      } catch (err) {
+        console.error(err.message);
+        res.json(new ResponseDTO().setStatusCode(404).pushError(err));
+      }
+    } else { // object id not valid
+      res.json(new ResponseDTO().pushError('Invalid ListingId'))
+    }
+  } else { // if no listingId being pass in return all inquires
     try {
       const inquiries = await Inquiry.find();
-      res.json(inquiries);
+      res.json(new ResponseDTO(inquiries));
     } catch (err) {
       console.error(err.message);
-      res.status(500).send('Server error');
+      res.json(new ResponseDTO().setStatusCode(500).pushError(err));
     }
-  });
+  }
 
-
-router.post("/create", async(req, res) => {
-    const {text, listingid} = req.body;
-    console.log(req.body.listingId, req.body.listingid);
-    let errors = [];
-  
-    if (!text || !listingid ) {
-      errors.push({msg: "Please enter all fields"});
-    }
-
-    if (errors.length > 0) {
-        res.status(400).send(errors);   
-    } else {
-        var currentTime = new Date();
-        const inquiry = new Inquiry({
-            text,
-            currentTime,
-            listingid
-          });
-    
-          inquiry.save()
-            .then(() => {
-                res.json(new ResponseDTO(inquiry));
-                kafkaProducer.send(inquiry);
-              }              
-            )
-            .catch(err => () => {
-              console.log(err);
-              res.status(500).send('error creating inquiry');
-            });
-        
-        //inquiryClient.publish('inquiries',inquiry);
-      
-    }
 
 });
 
-router.get("/listing/:listingid", async (req, res) => {
-    try {
-        console.log(req.params.listingid);
+/****************************
+ *  create inquiries
+ *  - /api/inquiries/create
+ *  - please pass in text and listingId in req.body
+ *  - response is a DTO with the inquiry itself, else res.statusCode = 500
+ ***************************/
+router.post('/create', (req, res, next) => {
+  let errors = [];
+  const user = req.user;
+  if (!user) {
+    errors.push('Please Log In');
+  }
 
-        const inquiries = await Inquiry.findById(req.params.listingid);
-        res.json(inquiries);
-    } catch (err) {
-        console.error(err.message);
-        res.status(404).send('Server error');
-    }
+  const {text, listingId} = req.body;
 
+  if (!text || !listingId) {
+    errors.push(`Please enter all fields`);
+  }
+
+  if (errors.length > 0) {
+    res.json(new ResponseDTO(500).pushError(errors));
+  } else {
+    const inquiry = new Inquiry({
+      text,
+      user: user._id,
+      listingId
+    });
+
+    inquiry.save()
+      .then(() => {
+          res.json(new ResponseDTO(inquiry));
+          // kafkaProducer.send(inquiry);
+          // TODO push redis notification here
+        }
+      )
+      .catch(err => () => {
+        console.log(err);
+        res.json(new ResponseDTO().setStatusCode(500).pushError(err));
+      });
+    //inquiryClient.publish('inquiries',inquiry);
+  }
 });
-
 
 module.exports = router; 
