@@ -5,9 +5,21 @@ const inquiryClient = redis.createClient({ host: process.env.REDIS_HOST || 'loca
 //mongoose models
 const Inquiry = require("../models/Inquiry");
 const Listing = require("../models/Listing");
+const { response } = require("express");
+const { text } = require("body-parser");
+
+router.get('/', auth, async (req, res) => {
+    try {
+      const inquiries = await Inquiry.find();
+      res.json(inquiries);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server error');
+    }
+  });
 
 
-router.post("/inquiry/postInquiry", (req, res) => {
+router.post("/inquiry/postInquiry", async(req, res) => {
     console.log(req.body);
     Inquiry.collection('test').insertOne({data: req.body.message })
         .then(() => console.log('db insert worked'))
@@ -16,8 +28,18 @@ router.post("/inquiry/postInquiry", (req, res) => {
     res.send('ok');
 });
 
-router.get("/inquiry/")
+router.get("/inquiry", async (req, res) => {
 
-router.get("/inquiry/getInquiries", async (req, res) => {
-    const listing = Listing.findById(req.listing._id)
-})
+    Inquiry.find({listingId: req.params.listingId})
+    .then(function(inquiries){
+        res.render('text', 'date', {
+            inquiries:inquiries
+        });
+    })
+
+    // db.Inquiry.findById(parseInt(request.params.listingId))
+    // .then(function(data){
+    //     response.status(200).send(data);
+    //     })
+
+    });
