@@ -97,15 +97,22 @@ router.post("/register", (req, res) => {
 // Login
 router.post("/login", (req, res, next) => {
   passport.authenticate("local", null, (err, user, info) => {
+      console.log(`err ${err}`);
+      console.log(`user ${user}`);
+      console.log(`info ${info}`);
       if (err) {
         return next(err);
       }
-
       if (!user) {
-        return new ResponseDTO().setStatusCode(401).pushError('Login Failed');
+        return res.json(new ResponseDTO().setStatusCode(403).pushError(info.message));
       }
 
-      return res.json(new ResponseDTO(user));
+      req.logIn(user, (err) => {
+        if (err) {
+          return next(err)
+        }
+        return res.json(new ResponseDTO(user));
+      });
     }
     // successRedirect: "/dashboard",
     // failureRedirect: "/users/login",
