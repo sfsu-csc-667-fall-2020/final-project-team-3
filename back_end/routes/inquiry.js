@@ -4,6 +4,9 @@ const ResponseDTO = require('../helper/responseDTO');
 //mongoose models
 const Inquiry = require("../models/Inquiry");
 
+const redis = require('redis');
+const client = redis.createClient({host: process.env.REDIS_HOST || 'localhost'});
+
 /****************************
  *  view inquiries
  *  - /api/inquiries for all inquiries
@@ -68,9 +71,10 @@ router.post('/create', (req, res, next) => {
 
     inquiry.save()
       .then(() => {
+          // redis message:
+          client.publish('inquiries', JSON.stringify(inquiry));
+
           res.json(new ResponseDTO(inquiry));
-          // kafkaProducer.send(inquiry);
-          // TODO push redis notification here
         }
       )
       .catch(err => () => {
