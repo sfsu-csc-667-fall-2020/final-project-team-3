@@ -6,10 +6,7 @@
  *           redis           *
  *****************************/
 const redis = require("redis");
-const redisClient = redis.createClient({
-  host: "redis",
-  port: 6379,
-});
+const redisClient = redis.createClient({host: process.env.REDIS_HOST || 'localhost'});
 
 /*****************************
  *          passport         *
@@ -54,7 +51,7 @@ app.use(express.json({
 }));
 
 // Bodyparser
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({extended: true}));
 
 // express session
 const session = require("express-session");
