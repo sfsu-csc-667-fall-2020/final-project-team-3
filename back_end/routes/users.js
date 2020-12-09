@@ -6,6 +6,7 @@ const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const passport = require("passport");
 const {forwardAuthenticated} = require("../config/auth");
+const ResponseDTO = require('../helper/responseDTO');
 
 /****************************
  *  register endpoint
@@ -94,11 +95,21 @@ router.post("/register", (req, res) => {
  ***************************/
 // Login
 router.post("/login", (req, res, next) => {
-  passport.authenticate("local", {
-    successRedirect: "/dashboard",
-    failureRedirect: "/users/login",
-    failureFlash: true,
-  })(req, res, next);
+  passport.authenticate("local", null, (err, user, info) => {
+      if (err) {
+        return next(err);
+      }
+
+      if (!user) {
+        return new ResponseDTO().setStatusCode(401).pushError('Login Failed');
+      }
+
+      return res.json(new ResponseDTO(user));
+    }
+    // successRedirect: "/dashboard",
+    // failureRedirect: "/users/login",
+    // failureFlash: true,
+  )(req, res, next);
 });
 
 // Logout
