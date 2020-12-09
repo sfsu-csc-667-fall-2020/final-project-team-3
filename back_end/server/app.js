@@ -6,10 +6,7 @@
  *           redis           *
  *****************************/
 const redis = require("redis");
-const redisClient = redis.createClient({
-  host: "redis",
-  port: 6379,
-});
+const redisClient = redis.createClient({host: process.env.REDIS_HOST || 'localhost'});
 
 /*****************************
  *          passport         *
@@ -48,10 +45,13 @@ app.use(expressLayouts);
 app.set("view engine", "ejs");
 
 // let express server static files
-app.use(express.static("public"));
+app.use(express.static('public'));
+app.use(express.json({
+  type: ['application/json', 'text/plain']
+}));
 
 // Bodyparser
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({extended: true}));
 
 // express session
 const session = require("express-session");
@@ -82,20 +82,14 @@ app.use(function (req, res, next) {
 // requests gets routed to ../routes/ to keep app.js clean
 app.use("/", require("../routes/index.js"));
 app.use("/users", require("../routes/users"));
-app.use("/api/listings", require("../routes/listings"));
+app.use('/api/listings', require('../routes/listings'));
+app.use('/api/inquiries', require('../routes/inquiry'));
 
 
-// TODO
-app.post("/api/deleteListing", (req, res) => {
-  res.send("deleteListing");
-});
+// // TODO
+// app.post("/api/deleteListing", (req, res) => {
+//   res.send("deleteListing");
+// });
 
-// TODO
-app.get("/api/getInquiries", (req, res) => {
-  res.send("getInquiries");
-});
 
-// TODO
-app.post("/api/makeInquiry", (req, res) => {
-  res.send("makeInquiry");
-});
+//console.log(app._router.stack);
