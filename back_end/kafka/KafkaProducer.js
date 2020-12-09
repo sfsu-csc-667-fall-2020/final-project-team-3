@@ -1,4 +1,4 @@
-const kafka = require("kafka-node");
+const kafka = require('kafka-node');
 const HighLevelProducer = kafka.HighLevelProducer;
 const Client = kafka.KafkaClient;
 
@@ -9,27 +9,25 @@ class KafkaProducer {
   }
 
   connect(callback) {
-    const client = new Client(); //{ kafkaHost: "kafka" }
+    const client = new Client();
     this.producer = new HighLevelProducer(client);
     callback();
   }
 
   send(message) {
     if (!this.producer) return;
-    this.producer.send(
-      [
-        {
-          topic: this.topic,
-          messages: [JSON.stringify(message)],
-        },
-      ],
+    this.producer.send([
+      {
+        topic: this.topic,
+        messages: [JSON.stringify(message)],
+      }
+    ],
       (err) => {
         if (err) {
-          console.log("Error sending from kafka producer");
+          console.log('Error sending from kafka producer');
           console.log(err);
         }
-      }
-    );
+      });
   }
 }
 

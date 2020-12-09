@@ -6,10 +6,13 @@
  *           redis           *
  *****************************/
 const redis = require("redis");
-const redisClient = redis.createClient({
-  host: "redis",
-  port: 6379,
-});
+const redisClient = redis.createClient();
+
+/*****************************
+ *           kafka           *
+ *****************************/
+const KafkaProducer = require("../kafka/KafkaProducer");
+const kafkaProducer = new KafkaProducer("images");
 
 /*****************************
  *          passport         *
@@ -28,7 +31,6 @@ mongoose
   .connect(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    useFindAndModify: false,
   })
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.log(err));
@@ -40,18 +42,20 @@ const express = require("express");
 const expressLayouts = require("express-ejs-layouts");
 const flash = require("connect-flash");
 const app = express();
-const PORT = 4000;
+const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`server started on ${PORT}`));
+
 
 // EJS
 app.use(expressLayouts);
 app.set("view engine", "ejs");
 
 // let express server static files
-app.use(express.static("public"));
+app.use(express.static('public'));
+
 
 // Bodyparser
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({extended: true}));
 
 // express session
 const session = require("express-session");
@@ -82,8 +86,25 @@ app.use(function (req, res, next) {
 // requests gets routed to ../routes/ to keep app.js clean
 app.use("/", require("../routes/index.js"));
 app.use("/users", require("../routes/users"));
-app.use("/api/listings", require("../routes/listings"));
+app.use('/api/listings', require('../routes/listings'));
 
+/*****************************
+ *          endpoints        *
+ *****************************/
+// TODO
+app.post("/api/createListing", (req, res) => {
+  res.send("createListing");
+});
+
+// TODO
+app.post("/api/editListing", (req, res) => {
+  res.send("editListing");
+});
+
+// TODO
+app.get("/api/viewListings", (req, res) => {
+  res.send("viewListings");
+});
 
 // TODO
 app.post("/api/deleteListing", (req, res) => {
