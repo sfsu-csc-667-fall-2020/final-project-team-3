@@ -7,6 +7,15 @@ TODO: come back and fix all this / make it fit / remove extra
   text-align: center;
 }
 
+hr {
+  border: none;
+  border-top: 3px double #f9e8ff;
+  color: #f9e8ff;
+  overflow: visible;
+  text-align: center;
+  height: 5px;
+  width: 70%;
+}
 
 body {
   background: rgb(40,91,173);
@@ -229,8 +238,16 @@ input[type=email] {
   transition: width 0.3s ease-in-out;
 }
 
+input[type=number] {
+  width: 20%;
+  padding: 5px 5px;
+  margin: 5px 0 5px;
+  box-sizing: border-box;
+  transition: width 0.3s ease-in-out;
+}
+
 input:focus {
-  width: 40%;
+  width: 25%;
   background-color: lightblue;
   border: 3px solid #555;
 }
@@ -245,6 +262,11 @@ label {
 .tos-box {
       padding: 0px 5px 0px 0;
       display: inline-block;
+}
+
+.listing-creation-form {
+  padding: 0px 5px 0px 0;
+  
 }
 
 
