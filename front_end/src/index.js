@@ -26,6 +26,7 @@ const webSocket = new WebSocket('ws://' + window.location.host.split(':')[0] + (
 
 // const dispatch = useDispatch();
 
+// get whether user is logged in, and if so their name and id
 const select = appState => ({
   isLoggedIn: appState.loginReducer.isLoggedIn,
   username: appState.loginReducer.username,
@@ -34,12 +35,6 @@ const select = appState => ({
 
 // need to get user id, then load posts by user. then load inquires from post id
 
-// get user info from login if it exists, store it as the state
-function getUserInfo() {
-  fetch("http://localhost:4000/user/login")
-      .then(res => res.text())
-      .then(res => this.setState({ userInfo: res }));
-}
 
 
 
@@ -53,12 +48,8 @@ ReactDOM.render(
   <Provider store={store}>
     <React.StrictMode>
       <BrowserRouter>
-      <AdminPanel isAdmin = {true}/>
+      <AdminPanel isLoggedIn = {isLoggedIn} username = {username} _id = {_id}/>
       <DisplayListings />
-        <Route path='/admin'>
-          <Admin />
-          <User />
-        </Route>
       </BrowserRouter>
     </React.StrictMode>
   </Provider>,
@@ -69,3 +60,4 @@ ReactDOM.render(
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();
+export default connect(select)(index);
