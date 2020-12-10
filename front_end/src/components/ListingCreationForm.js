@@ -52,8 +52,9 @@ const ListingCreationForm = () => {
           id='input-type'></input>
         </div>
         
+        <div class = "form-entry">
         <input id="photos" name="photos" type="file" multiple accept="image/*"></input>
-    
+        </div>
         <button type='submit' id='submit' onClick={() =>
         dispatch(submitListing({ description, type, price, title }))}>
         Submit

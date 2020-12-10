@@ -6,7 +6,7 @@ import ListingCreationForm from "./ListingCreationForm";
 
 
 const select = appState => ({
-    isLoggedIn: appState.loginReducer.isLoggedIn,
+    // isLoggedIn: appState.loginReducer.isLoggedIn,
     username: appState.loginReducer.username,
     _id: appState.loginReducer._id,
   })

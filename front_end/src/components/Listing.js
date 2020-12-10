@@ -29,10 +29,10 @@ const Listing = ({ listing, _id }) => {
         <table className='listing'>
           <thead>
             <tr>
-              <th>description</th>
-              <th>type</th>
-              <th>price</th>
-              <th>title</th>
+              <th>Description</th>
+              <th>Type</th>
+              <th>Price</th>
+              <th>Title</th>
             </tr>
           </thead>
           <tbody>

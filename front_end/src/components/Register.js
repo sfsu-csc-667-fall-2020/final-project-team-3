@@ -33,14 +33,26 @@ const Register = () => {
     return(
         <div class = "registration-form">
             <form action="/users/register" method="POST">
+            <div class = "form-entry">
             <label for="name">Username</label>
             <input type="text" id = "username" placeholder="Enter username" onChange = {e => setUsername(e.target.value)}/>
+            </div>
+
+            <div class = "form-entry">
             <label for="username">Email</label>
             <input type="email" id = "email" placeholder="Enter email" onChange = {e => setEmail(e.target.value)}/>
+            </div>
+
+            <div class = "form-entry">
             <label for="password">Password</label>
             <input type="password" id = "password" placeholder="Enter password" onChange = {e => setPassword(e.target.value)}/>
+            </div>
+
+            <div class = "form-entry">
             <label for="password">Confirm Password</label>
             <input type="password" id = "confirm-password" placeholder="Confirm password" onChange = {e => setConfirmPassword(e.target.value)}/>
+            </div>
+
             <button type="submit" onClick = {() => {handleSubmit()}}>Register</button>
         </form>
         </div>

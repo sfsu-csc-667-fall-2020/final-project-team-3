@@ -51,7 +51,7 @@ ReactDOM.render(
     <React.StrictMode>
       <BrowserRouter>
       <UserLanding />
-      <AdminPanel />
+      <AdminPanel isLoggedIn = {true}/>
       <DisplayListings />
       </BrowserRouter>
     </React.StrictMode>

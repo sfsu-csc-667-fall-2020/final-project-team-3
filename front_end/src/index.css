@@ -178,6 +178,10 @@ header input:focus {
   padding-bottom: 10px;
 }
 
+.form-entry {
+  padding-bottom: 5px;
+}
+
 /*
 old style header
 */
