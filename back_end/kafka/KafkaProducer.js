@@ -9,7 +9,8 @@ class KafkaProducer {
   }
 
   connect(callback) {
-    const client = new Client(); //{ kafkaHost: "kafka" }
+    //const client = new kafka.KafkaClient({kafkaHost: '10.3.100.196:9092'});
+    const client = new Client(process.env.KAFKA_ZOOKEEPER_CONNECT); //{ kafkaHost: "kafka" }
     this.producer = new HighLevelProducer(client);
     callback();
   }
@@ -32,5 +33,4 @@ class KafkaProducer {
     );
   }
 }
-
 module.exports = KafkaProducer;
