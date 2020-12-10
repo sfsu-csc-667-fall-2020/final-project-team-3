@@ -2,12 +2,16 @@ version: "3"
 services:
   app:
     image: docker-node
-    restart: always
     build: ./back_end
     ports:
-      - "4000:4000"
+      - "4000-4001:4000"
     networks:
       - webnet
+    deploy:
+      mode: replicated
+      replicas: 2
+      restart_policy:
+        condition: on-failure
 
   redis:
     image: redis:latest
@@ -30,8 +34,11 @@ services:
     ports:
       - "9092:9092"
     environment:
-      KAFKA_ADVERTISED_HOST_NAME: localhost
+      # copy paste
+      #KAFKA_ADVERTISED_HOST_NAME: 192.168.99.100 # docker-machine ip
+      KAFKA_ADVERTISED_HOST_NAME: kafka
       KAFKA_ADVERTISED_PORT: "9092"
+      # KAFKA_CREATE_TOPICS: sales-topic:1:1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
     networks:
       - webnet
