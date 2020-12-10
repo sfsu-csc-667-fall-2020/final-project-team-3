@@ -1,6 +1,6 @@
 import React from "react";
 import Inquiries from "../components/Inquiries";
-import { useSelector } from "react-redux";
+import { useSelector, connect } from "react-redux";
 import ListingCreationForm from "./ListingCreationForm";
 
 
@@ -15,7 +15,7 @@ const select = appState => ({
 
 
 // Admin panel - loads inquiries and allows to respond - only display if logged in
-const AdminPanel = () => {
+const AdminPanel = ({isLoggedIn, username, _id}) => {
     return (
         <div>
 

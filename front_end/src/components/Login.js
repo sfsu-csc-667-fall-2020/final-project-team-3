@@ -4,12 +4,15 @@ import { useDispatch } from "react-redux";
 import { updateListing, submitListing } from "../redux/actions/listingActions";
 import axios from "axios";
 import { userLogin } from "../redux/actions/loginActions";
+import loginReducer from "../redux/reducers/loginReducer";
+
 
 // axios post to login, get user json object back
 
 const Login = () => {
-    const [usernameToSubmit, setUsername] = React.React.useState('');
-    const [passwordToSubmit, setPassword] = React.React.useState('');
+    const dispatch = useDispatch();
+    const [usernameToSubmit, setUsername] = React.useState('');
+    const [passwordToSubmit, setPassword] = React.useState('');
     let username = "";
     let _id = "";
     let userData = {};
@@ -38,3 +41,5 @@ const Login = () => {
         </div>
     );
 }
+
+export default Login;

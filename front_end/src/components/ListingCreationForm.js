@@ -3,6 +3,8 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { updateListing, submitListing } from "../redux/actions/listingActions";
 
+
+// TODO: hook to axios to post
 const ListingCreationForm = () => {
   const dispatch = useDispatch();
   const description = useSelector((state) => state.listingReducer.description);

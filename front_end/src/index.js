@@ -9,7 +9,9 @@ import Admin from "./pages/Admin";
 import AdminPanel from "./components/AdminPanel";
 import DisplayListings from "./components/DisplayListings";
 import User from "./pages/User";
+import UserLanding from "./components/UserLanding";
 import "./App.css";
+import { connect } from 'react-redux';
 
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 
@@ -48,7 +50,8 @@ ReactDOM.render(
   <Provider store={store}>
     <React.StrictMode>
       <BrowserRouter>
-      <AdminPanel isLoggedIn = {isLoggedIn} username = {username} _id = {_id}/>
+      <UserLanding />
+      <AdminPanel />
       <DisplayListings />
       </BrowserRouter>
     </React.StrictMode>
@@ -60,4 +63,3 @@ ReactDOM.render(
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();
-export default connect(select)(index);
