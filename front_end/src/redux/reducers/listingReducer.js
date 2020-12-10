@@ -3,6 +3,8 @@ const initialState = {
   type: "",
   price: "",
   title: "",
+  listingId: "",
+  authorId: "",
 };
 
 const listingReducer = (state = initialState, action) => {

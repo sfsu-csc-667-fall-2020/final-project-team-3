@@ -3,6 +3,8 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { updateListing, submitListing } from "../redux/actions/listingActions";
 
+
+// TODO: hook to axios to post
 const ListingCreationForm = () => {
   const dispatch = useDispatch();
   const description = useSelector((state) => state.listingReducer.description);
@@ -14,34 +16,42 @@ const ListingCreationForm = () => {
     <div class = "listing-creation-form">   
     <form action="http://localhost:4000/api/listings/create" method="post" enctype="multipart/form-data">
         <h2>Create Listing</h2>
-        <label for="title">title:</label>
+        <div class = "form-entry">
+        <label for="title">Title:</label>
         <input onChange={(e) =>
             dispatch(updateListing({ title: e.target.value }))
           }
           value={title}
           id='input-title'></input>
-    
-        <label for="description">description:</label>
+        </div>
+
+        <div class = "form-entry">
+        <label for="description">Description:</label>
         <input onChange={(e) =>
             dispatch(updateListing({ description: e.target.value }))
           }
           value={description}
           id='input-description'></input>
-    
-        <label for="price">price:</label>
+        </div>
+
+        <div class = "form-entry">
+        <label for="price">Price:</label>
         <input onChange={(e) =>
             dispatch(updateListing({ price: e.target.value }))
           }
           value={price}
           id='input-price'></input>
-    
-        <label for="type">type:</label>
+        </div>
+
+        <div class = "form-entry">
+        <label for="type">Type:</label>
         <input onChange={(e) =>
             dispatch(updateListing({ type: e.target.value }))
           }
           value={type}
           id='input-type'></input>
-    
+        </div>
+        
         <input id="photos" name="photos" type="file" multiple accept="image/*"></input>
     
         <button type='submit' id='submit' onClick={() =>

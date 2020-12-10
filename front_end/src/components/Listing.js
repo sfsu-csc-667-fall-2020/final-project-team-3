@@ -1,17 +1,31 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
+import { connect } from 'react-redux';
 import {
   submitInquiry,
   loadInquiries,
   deleteListing,
 } from "../redux/actions/listingActions";
+import axios from 'axios';
 
-const Listing = ({ listing, userMode }) => {
+const select = appState => ({
+  _id: appState.loginReducer._id,
+})
+
+const Listing = ({ listing, _id }) => {
+  const isOwnListing = false;
+  // check to see if listing is own, so it knows whether to show inquiries or not
+  if (_id === listing.user) {
+    isOwnListing = true;
+  }
+  //only first image
+  const imageURL = listing.images[0];
   const dispatch = useDispatch();
   const [message, setMessage] = useState("");
   return (
     <div>
       <div>
+        <img src = {"http://localhost/upload/thumb-500" + imageURL}/>
         <table className='listing'>
           <thead>
             <tr>
@@ -32,7 +46,7 @@ const Listing = ({ listing, userMode }) => {
         </table>
       </div>
 
-      {userMode ? (
+      {!isOwnListing ? (
         <div>
           <form>
             <div>
@@ -70,4 +84,4 @@ const Listing = ({ listing, userMode }) => {
   );
 };
 
-export default Listing;
+export default connect(select)(Listing);

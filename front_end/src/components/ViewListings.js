@@ -1,33 +1,31 @@
-import React from "react";
+import React from 'react';
+import { connect } from 'react-redux';
+import Listing from '../components/Listing';
+import axios from 'axios';
 
-const ViewListings = (listing) => {
+
+// display listings if they exist
+const ViewListings = () => {
+  const listings = {};
+  //let numberOfListings = store.getState().listingReducer.numberOfListings;
+  //const listings = getState().listingReducer.items;
+  // get listings and store
+  axios.get('/api/listings')
+  .then(res => {
+    listings = res.data.listings;
+  });
+
+  
+  
   return (
     <div>
-      <h1>ViewListings</h1>
-      <div>
-        <div className='.listing'>
-          <table className='listing'>
-            <thead>
-              <tr>
-                <th>description</th>
-                <th>type</th>
-                <th>price</th>
-                <th>title</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>{listing.description}</td>
-                <td>{listing.type}</td>
-                <td>{listing.price}</td>
-                <td>{listing.title}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  );
-};
+    <h1>Listings</h1>
 
+      {listings.map(listing => (
+        <div id = "listing" className = "listing" key = {listing.title}>
+          <Listing listing = {listing}/>
+        </div>
+      ))}
+  </div>
+  )};
 export default ViewListings;

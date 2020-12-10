@@ -11,10 +11,12 @@ const initialState = {
       case "USER_LOGIN":
         return {
           ...state,
-          _id: action._id,
-          username: action.username,
-          isLoggedIn: action.true,
+          username: action.payload.username,
+          _id: action.payload._id,
+          isLoggedIn: true,
         };
+      case "GET_USERNAME":
+          return state.username;  
       case "USER_LOGOUT":
           return initialState;
         default:
