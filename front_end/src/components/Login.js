@@ -32,10 +32,15 @@ const Login = () => {
     return(
         <div class = "login-form">
             <form action="/users/login" method="POST">
+            <div class = "form-entry">
                 <label for="username">Username</label>
                 <input type="text" id = "username" placeholder="Enter username" onChange = {e => setUsername(e.target.value)}/>
+            </div>
+
+            <div class = "form-entry">
                 <label for="password">Password</label>
                 <input type="password" id = "password" placeholder="Enter password" onChange = {e => setPassword(e.target.value)}/>
+            </div>
             <button type="submit" onClick = {() => {handleSubmit()}}>Login</button>
             </form>
         </div>
