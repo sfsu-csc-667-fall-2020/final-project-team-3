@@ -18,11 +18,14 @@ const Listing = ({ listing, _id }) => {
   if (_id === listing.user) {
     isOwnListing = true;
   }
+  //only first image
+  const imageURL = listing.images[0];
   const dispatch = useDispatch();
   const [message, setMessage] = useState("");
   return (
     <div>
       <div>
+        <img src = {"http://localhost/upload/thumb-500" + imageURL}/>
         <table className='listing'>
           <thead>
             <tr>
