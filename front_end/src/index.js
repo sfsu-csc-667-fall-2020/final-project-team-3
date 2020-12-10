@@ -2,7 +2,6 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import { createStore, applyMiddleware, } from "redux";
-import { useDispatch } from 'react-redux';
 import * as serviceWorker from "./serviceWorker";
 import rootReducer from "./redux/reducers/rootReducer";
 import thunk from "redux-thunk";
@@ -20,12 +19,12 @@ const store = createStore(rootReducer, applyMiddleware(thunk));
 
 const webSocket = new WebSocket('ws://' + window.location.host.split(':')[0] + (window.location.port && `:${window.location.port}`) + '/websocket');
 
-webSocket.onmessage = (message) => {
-  console.log(message)
-  store.dispatch(insertMessage(message.data));
-};
+// webSocket.onmessage = (message) => {
+//   console.log(message)
+//   store.dispatch(insertMessage(message.data));
+// };
 
-const dispatch = useDispatch();
+// const dispatch = useDispatch();
 
 const select = appState => ({
   isLoggedIn: appState.loginReducer.isLoggedIn,

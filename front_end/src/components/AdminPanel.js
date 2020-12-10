@@ -44,8 +44,12 @@ const loadListingCreationForm = () => {
 const AdminPanel = ({username, _id}) => {
     return (
         <div class = "admin-panel">
+            <div class = "grid-container">
+               <div class = "site-content" id = "site-content">
         <ListingCreationForm />
         <Inquiries />
+        </div>
+        </div>
         </div>
     );    
 };
