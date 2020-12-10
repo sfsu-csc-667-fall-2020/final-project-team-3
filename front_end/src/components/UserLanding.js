@@ -20,7 +20,7 @@ const select = appState => ({
 const UserLanding = ({isLoggedIn}) => {
     return(
         <div>
-        {isLoggedIn && (
+        {!isLoggedIn && (
             <div class = "grid-container">
                 <div class = "site-content" id = "site-content">
                     <div class = "user-landing">

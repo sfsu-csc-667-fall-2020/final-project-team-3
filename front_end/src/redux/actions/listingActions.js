@@ -7,6 +7,12 @@ export const submitInquirySuccess = (message, listing) => {
   };
 };
 
+export const getListingAuthor = () => {
+  return {
+    type: "GET_LISTING_AUTHOR",
+  }
+}
+
 export const submitInquiry = (message, listing) => {
   return (dispatch) => {
     axios
