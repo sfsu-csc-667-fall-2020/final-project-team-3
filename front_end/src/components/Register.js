@@ -32,6 +32,9 @@ const Register = () => {
       
     return(
         <div class = "registration-form">
+            <div class = "admin-panel">
+            <div class = "grid-container">
+                <div class = "site-content" id = "site-content">
             <form action="/users/register" method="POST">
             <div class = "form-entry">
             <label for="name">Username</label>
@@ -55,6 +58,10 @@ const Register = () => {
 
             <button type="submit" onClick = {() => {handleSubmit()}}>Register</button>
         </form>
+        <a href = "http://localhost:3000/login">Already have an account?</a>
+        </div>
+        </div>
+        </div>
         </div>
     );
 }
