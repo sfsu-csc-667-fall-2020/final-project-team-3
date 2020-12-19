@@ -31,6 +31,9 @@ const Login = () => {
       
     return(
         <div class = "login-form">
+            <div class = "admin-panel">
+            <div class = "grid-container">
+                <div class = "site-content" id = "site-content">
             <form action="/users/login" method="POST">
             <div class = "form-entry">
                 <label for="username">Username</label>
@@ -43,7 +46,12 @@ const Login = () => {
             </div>
             <button type="submit" onClick = {() => {handleSubmit()}}>Login</button>
             </form>
+            <a href = "http://localhost:3000/register">Need an account?</a>
         </div>
+        </div>
+        </div>
+        </div>
+
     );
 }
 

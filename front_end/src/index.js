@@ -9,7 +9,10 @@ import Admin from "./pages/Admin";
 import AdminPanel from "./components/AdminPanel";
 import DisplayListings from "./components/DisplayListings";
 import User from "./pages/User";
+import Register from "./components/Register";
+import Login from "./components/Login";
 import UserLanding from "./components/UserLanding";
+import ViewListings from "./components/ViewListings";
 import "./App.css";
 import { connect } from 'react-redux';
 
@@ -50,9 +53,14 @@ ReactDOM.render(
   <Provider store={store}>
     <React.StrictMode>
       <BrowserRouter>
-      <UserLanding />
+      <Route path = "/register"><Register /></Route>
+      <Route path = "/login"><Login /></Route>
+      <Route exact path = "/">
       <AdminPanel isLoggedIn = {true}/>
       <DisplayListings />
+      {/* <ViewListings /> */}
+      </Route>
+      
       </BrowserRouter>
     </React.StrictMode>
   </Provider>,
